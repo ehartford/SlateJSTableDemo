@@ -85,6 +85,7 @@ const TablesExample = () => {
 }
 
 const range = (n: number) => Array.from(Array(n).keys())
+enum AlignDirection {Left, Right, Center}
 
 const withTables = (editor: any) => {
     const { deleteBackward, deleteForward, insertBreak } = editor
@@ -138,8 +139,6 @@ const withTables = (editor: any) => {
     }
 
     editor.insertTable = (rows: number, cols: number) => {
-        const { selection } = editor
-
         const emptyCell = {
             type: 'table-cell',
             children: [{ text: '' }],
@@ -156,6 +155,12 @@ const withTables = (editor: any) => {
         editor.insertNode(node);
 
         return editor
+    }
+
+    editor.alignCell = (direction: AlignDirection) => {
+        const { selection } = editor
+
+
     }
 
     editor.insertBreak = () => {
@@ -191,7 +196,7 @@ const Element = ({ attributes, children, element }: any) => {
         case 'table-row':
             return <tr {...attributes}>{children}</tr>
         case 'table-cell':
-            return <td {...attributes}>{children}</td>
+            return <td align={element.align?element.align:"left"} {...attributes}>{children}</td>
         default:
             return <p {...attributes}>{children}</p>
     }
