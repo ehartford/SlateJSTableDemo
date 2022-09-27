@@ -1,5 +1,3 @@
-
-
 import React, { useCallback, useMemo } from 'react'
 import { Slate, Editable, withReact } from 'slate-react'
 import { TableChartOutlined, FormatAlignLeft, FormatAlignRight, FormatAlignCenter } from '@mui/icons-material';
@@ -23,7 +21,6 @@ const TablesExample = () => {
     )
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     type Dimensions = {row: number; col: number;}
-    const [dimensions, setDimensions] = React.useState<Dimensions>({row:1, col:1});
     const [hover, setHover] = React.useState<Dimensions>({row:1, col:1});
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,7 +64,7 @@ const TablesExample = () => {
                                     }}
                                     onMouseOver={()=>setHover({row, col})}
                                     onClick={() => {
-                                        setDimensions({row, col});
+                                        editor.insertTable(row+1, col+1)
                                         handleClose();
                                     }}
                                     data-row={row}
@@ -143,7 +140,20 @@ const withTables = (editor: any) => {
     editor.insertTable = (rows: number, cols: number) => {
         const { selection } = editor
 
+        const emptyCell = {
+            type: 'table-cell',
+            children: [{ text: '' }],
+        };
 
+        const node = {
+            type: 'table',
+            children: range(rows).map(() => ({
+                type: "table-row",
+                children: range(cols).map(() => emptyCell)
+            }))
+        }
+
+        editor.insertNode(node);
 
         return editor
     }
